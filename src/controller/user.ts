@@ -11,18 +11,12 @@ class userController {
             const {name, password} = req.body
 
             if (!(typeof name === 'string' && isNaN(+name))) {
-                return res.status(400).json({
-                    status: "Error",
-                    data: "Некорректно введено имя"
-                })
+                resHandler.sendError(res, 400, "Некорректно введено имя")
             }
 
             const isAlready = await db.users.findAll({where: {name: name}})
             if (isAlready.length) {
-                return res.status(400).json({
-                    status: "Error",
-                    data: "Данный пользователь уже создан"
-                })
+                resHandler.sendError(res, 400, "Данный пользователь уже создан")
             }
             const hashPassword = await bcrypt.hash(password, 7)
 
@@ -30,10 +24,7 @@ class userController {
                 name: name,
                 password: hashPassword
             })
-            res.status(201).json({
-                status: "successful",
-                data: "Пользователь успешно создан"
-            })
+            resHandler.sendData(res, 201, "Пользователь успешно создан")
         } catch(e) {
             console.log(e)
             resHandler.sendError(res, 500, "Неизвестная ошибка")
@@ -45,34 +36,22 @@ class userController {
             const {name, password} = req.body
 
             if (!(typeof name === 'string' && isNaN(+name))) {
-                return res.status(400).json({
-                    status: "Error",
-                    data: "Некорректно введено имя"
-                })
+                resHandler.sendError(res, 400, "Некорректно введено имя")
             }
 
             const user = await db.users.findAll({where: {name: name}})
 
             if (!user.length) {
-                return res.status(400).json({
-                    status: "Error",
-                    data: "Данный пользователь не зарегистрирован"
-                })
+                resHandler.sendError(res, 400, "Данный пользователь не зарегистрирован")
             }
 
             const isHashPassword = await bcrypt.compare(password, user[0].dataValues.password)
             if (!isHashPassword) {
-                return res.status(404).json({
-                    status: "Error",
-                    data: "Введёный пароль не верный"
-                })
+                resHandler.sendError(res, 404, "Введёный пароль не верный")
             }
             
             const token = jwt.sign({id: user[0].dataValues.id}, secret, {expiresIn: '7h'})
-            res.status(200).json({
-                status: "successful",
-                data: token
-            })
+            resHandler.sendData(res, 200, token)
 
         } catch(e) {
             console.log(e)
@@ -82,10 +61,7 @@ class userController {
     
     async someDo(req: any, res: any) {
         try {
-            res.status(200).json({
-                status: "successful",
-                data: 'hello world'
-            })
+            resHandler.sendData(res, 200, 'hello world')
         } catch(e) {
             console.log(e)
             resHandler.sendError(res, 500, "Неизвестная ошибка")

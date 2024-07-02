@@ -3,7 +3,7 @@ const models = require('../../models')
 const db = models.sequelize.models
 
 class categoriesController {
-    async createCategories(req: any, res: any) {
+    async createCategories(req: any, res: Response) {
         try {
             const name = req.body.name
             if (!(typeof name === 'string' && isNaN(+name))) {

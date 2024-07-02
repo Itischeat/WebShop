@@ -1,15 +1,12 @@
 const jwt = require('jsonwebtoken')
-const {secret} = require('../src/security.ts')
-const resHandler = require('../src/handlers/responseHandler')
+const {secret} = require('../security')
+const resHandler = require('../handlers/responseHandler')
 
 module.exports = function(req: any, res: any, next: any) {
     try {
         const token = req.headers['authorization']
         
-        if (!token) return res.status(401).json({
-            status: "Error",
-            data: "У вас не достаточно прав для этого запроса"
-        })
+        if (!token) resHandler.sendError(res, 401, "У вас не достаточно прав для этого запроса")
         
         const decodeData = jwt.verify(token, secret, (err: any) => {
             if (err) {
