@@ -1,0 +1,10 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": "itischeat",
+    "database": "webShop",
+    "host": "localhost",
+    "dialect": "postgres",
+    "logging": false
+  }
+}
